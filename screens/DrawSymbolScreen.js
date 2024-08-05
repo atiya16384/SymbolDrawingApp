@@ -27,7 +27,7 @@ export default function DrawSymbolScreen() {
   const handleSave = () => {
     const path = pathRef.current.trim();
     if (path) {
-      alert('Symbol saved!');
+      alert('Symbol searched!');
       pathRef.current = 'M'; // Reset the path for new drawing
       setD('');
     }
@@ -40,7 +40,7 @@ export default function DrawSymbolScreen() {
           <Path d={d} stroke="#000" strokeWidth={3} fill="none" />
         </Svg>
       </View>
-      <Button title="Save Symbol" onPress={handleSave} />
+      <Button title="Search Symbol" onPress={handleSave} />
     </View>
   );
 }
