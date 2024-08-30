@@ -1,6 +1,6 @@
 // screens/DrawSymbolScreen.js
 import React, { useRef, useState } from 'react';
-import { View, Button, StyleSheet, PanResponder, Dimensions } from 'react-native';
+import { View, Button, StyleSheet, PanResponder, AsyncStorage } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 export default function DrawSymbolScreen() {
@@ -9,14 +9,10 @@ export default function DrawSymbolScreen() {
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderGrant: (evt, gestureState) => {
-      const { locationX, locationY } = evt.nativeEvent;
-      pathRef.current = `M${locationX.toFixed(2)},${locationY.toFixed(2)}`; // Initialize the path with 'M'
-      setD(pathRef.current);
-    },
     onPanResponderMove: (evt, gestureState) => {
-      const { locationX, locationY } = evt.nativeEvent;
-      pathRef.current += ` L${locationX.toFixed(2)},${locationY.toFixed(2)}`;
+      const x = (gestureState.moveX - evt.nativeEvent.locationX).toFixed(2);
+      const y = (gestureState.moveY - evt.nativeEvent.locationY).toFixed(2);
+      pathRef.current += ` L${x},${y}`;
       setD(pathRef.current);
     },
     onPanResponderRelease: () => {
@@ -24,12 +20,25 @@ export default function DrawSymbolScreen() {
     },
   });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const path = pathRef.current.trim();
     if (path) {
-      alert('Symbol searched!');
+      alert('Symbol saved!');
+      await saveSymbol(path);
       pathRef.current = 'M'; // Reset the path for new drawing
       setD('');
+    }
+  };
+
+  const saveSymbol = async (path) => {
+    try {
+      let symbols = await AsyncStorage.getItem('symbols');
+      symbols = symbols ? JSON.parse(symbols) : [];
+      symbols.push(path);
+      await AsyncStorage.setItem('symbols', JSON.stringify(symbols));
+      console.log('Symbols saved:', symbols);
+    } catch (error) {
+      console.error('Error saving symbol:', error);
     }
   };
 
@@ -40,7 +49,7 @@ export default function DrawSymbolScreen() {
           <Path d={d} stroke="#000" strokeWidth={3} fill="none" />
         </Svg>
       </View>
-      <Button title="Search Symbol" onPress={handleSave} />
+      <Button title="Save Symbol" onPress={handleSave} />
     </View>
   );
 }

@@ -13,5 +13,19 @@ export default function SignOutButton({ navigation }) {
     }
   };
 
-  return <Button mode="contained" onPress={signOut}>Sign Out</Button>;
+  return (
+    <Button mode="contained" onPress={signOut} style={styles.button}>
+      Sign Out
+    </Button>
+  );
 }
+
+const styles = {
+  button: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#6200ee',
+  },
+};
+

@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeScreen from '../screens/HomeScreen';
 import DrawSymbolScreen from '../screens/DrawSymbolScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import SymbolInfoScreen from '../screens/SymbolInfoScreen';
+import ManufacturerScreen from '../screens/ManufacturerScreen';
 import EngravingListScreen from '../screens/EngravingListScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
@@ -36,8 +36,8 @@ function MainTabs({ navigation }) {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Draw Symbol" component={DrawSymbolScreen} />
-      <Tab.Screen name="Symbol Info" component={SymbolInfoScreen} />
       <Tab.Screen name="Engraving List" component={EngravingListScreen} />
+      <Tab.Screen name="Manufacturer" component={ManufacturerScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
@@ -55,14 +55,18 @@ function CustomDrawerContent(props) {
         label="Draw Symbol"
         onPress={() => props.navigation.navigate('Main', { screen: 'MainTabs', params: { screen: 'Draw Symbol' } })}
       />
-      <DrawerItem
-        label="Symbol Info"
-        onPress={() => props.navigation.navigate('Main', { screen: 'MainTabs', params: { screen: 'Symbol Info' } })}
-      />
+      
       <DrawerItem
         label="Engraving List"
         onPress={() => props.navigation.navigate('Main', { screen: 'MainTabs', params: { screen: 'Engraving List' } })}
       />
+
+    <DrawerItem
+        label="Manufacturer"
+        onPress={() => props.navigation.navigate('Main', { screen: 'MainTabs', params: { screen: 'Manufacturer' } })}
+      />
+      
+      
       <DrawerItem
         label="Settings"
         onPress={() => props.navigation.navigate('Main', { screen: 'MainTabs', params: { screen: 'Settings' } })}
