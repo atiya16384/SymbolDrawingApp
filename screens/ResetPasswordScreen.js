@@ -1,4 +1,3 @@
-// screens/ResetPasswordScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Title } from 'react-native-paper';
