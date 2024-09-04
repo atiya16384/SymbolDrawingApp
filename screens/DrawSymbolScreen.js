@@ -5,34 +5,35 @@ import RNFS from 'react-native-fs';
 
 export default function DrawSymbolScreen({ navigation }) {
   const [paths, setPaths] = useState([]);  // Store all drawn paths
-  const currentPathRef = useRef('');  // Track the current drawing path
+  const [currentPath, setCurrentPath] = useState('');  // Track the current drawing path
   const [layout, setLayout] = useState(null);  // Store canvas layout
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: (evt) => {
       if (layout) {
-        const startX = evt.nativeEvent.locationX;  // Fixing the coordinates calculation
-        const startY = evt.nativeEvent.locationY;  // Fixing the coordinates calculation
-        currentPathRef.current = `M${startX.toFixed(2)},${startY.toFixed(2)}`;
+        const startX = evt.nativeEvent.locationX;
+        const startY = evt.nativeEvent.locationY;
+        const newPath = `M${startX.toFixed(2)},${startY.toFixed(2)}`;
+        setCurrentPath(newPath);  // Start a new path
       } else {
         Alert.alert('Error', 'Canvas layout not available.');
       }
     },
     onPanResponderMove: (evt) => {
       if (layout) {
-        const adjustedX = evt.nativeEvent.locationX;  // Fixing the coordinates calculation
-        const adjustedY = evt.nativeEvent.locationY;  // Fixing the coordinates calculation
+        const adjustedX = evt.nativeEvent.locationX;
+        const adjustedY = evt.nativeEvent.locationY;
 
         if (!isNaN(adjustedX) && !isNaN(adjustedY)) {
-          currentPathRef.current += ` L${adjustedX.toFixed(2)},${adjustedY.toFixed(2)}`;
-          setPaths((prevPaths) => [...prevPaths]);  // Trigger re-render
+          const updatedPath = `${currentPath} L${adjustedX.toFixed(2)},${adjustedY.toFixed(2)}`;
+          setCurrentPath(updatedPath);  // Update the current path
         }
       }
     },
     onPanResponderRelease: () => {
-      setPaths((prevPaths) => [...prevPaths, currentPathRef.current]);  // Save the current path
-      currentPathRef.current = '';  // Reset the current path
+      setPaths((prevPaths) => [...prevPaths, currentPath]);  // Save the current path in the paths array
+      setCurrentPath('');  // Reset the current path
     },
   });
 
@@ -100,8 +101,8 @@ export default function DrawSymbolScreen({ navigation }) {
           {paths.map((d, index) => (
             <Path key={index} d={d} stroke="#000" strokeWidth={3} fill="none" />
           ))}
-          {currentPathRef.current && (
-            <Path d={currentPathRef.current} stroke="#000" strokeWidth={3} fill="none" />
+          {currentPath && (
+            <Path d={currentPath} stroke="#000" strokeWidth={3} fill="none" />
           )}
         </Svg>
       </View>
@@ -127,30 +128,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f0f4f7',
   },
   canvas: {
     width: '90%',
-    height: '70%',
-    borderColor: '#6A1B9A',  // Darker purple theme border
-    borderWidth: 2,
+    height: '65%',  // Adjusted height
+    borderColor: '#5E35B1',  // More consistent color for the border
+    borderWidth: 3,
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
   toolBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: '100%',
-    padding: 10,
-    backgroundColor: '#6A1B9A',  // Darker purple background for the toolbar
+    width: '90%',
+    padding: 12,
+    backgroundColor: '#4527A0',
+    borderRadius: 12,  // Rounded corners for toolbar
+    marginTop: 20,  // Moved toolbar lower
   },
   toolButton: {
     flex: 1,
     marginHorizontal: 5,
-    paddingVertical: 15,
-    backgroundColor: '#7B1FA2',  // Slightly lighter purple for buttons
-    borderRadius: 10,
+    paddingVertical: 14,  // Adjusted padding for button size
+    backgroundColor: '#673AB7',  // Harmonized color with toolbar
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 3,  // Shadow for Android
@@ -160,7 +163,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });

@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { View, Text, StyleSheet } from 'react-native'; // Import StyleSheet
+import { View, Text, StyleSheet } from 'react-native';
 
 import HomeScreen from '../screens/HomeScreen';
 import DrawSymbolScreen from '../screens/DrawSymbolScreen';
@@ -21,21 +21,30 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-// Add the manufacturer-related stack
+// Manufacturer stack navigator
 function ManufacturerStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ManufacturerScreen" component={ManufacturerScreen} options={{ title: 'Manufacturers' }} />
-      <Stack.Screen name="ManufacturerListScreen" component={ManufacturerListScreen} options={({ route }) => ({
-        title: route.params.manufacturer.name,
-        headerBackTitleVisible: false,
-      })} />
+      <Stack.Screen 
+        name="ManufacturerScreen" 
+        component={ManufacturerScreen} 
+        options={{ title: 'Manufacturers' }} 
+      />
+      <Stack.Screen 
+        name="ManufacturerListScreen" 
+        component={ManufacturerListScreen} 
+        options={({ route }) => ({
+          title: route.params.manufacturer.name,
+          headerBackTitleVisible: false,
+        })} 
+      />
     </Stack.Navigator>
   );
 }
 
-function LensMatchesScreenStack(){
-  return(
+// Lens Matches stack navigator
+function LensMatchesScreenStack() {
+  return (
     <Stack.Navigator initialRouteName="DrawSymbol">
       <Stack.Screen name="Draw Symbol" component={DrawSymbolScreen} />
       <Stack.Screen name="LensMatches" component={LensMatchesScreen} />
@@ -43,42 +52,65 @@ function LensMatchesScreenStack(){
   );
 }
 
-// Main tabs for bottom navigation
+// Main tabs navigator for bottom navigation
 function MainTabs() {
   return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-      tabBarIcon: ({ color, size }) => {
-        let iconName;
-        switch (route.name) {
-          case 'Home':
-            iconName = 'home';
-            break;
-          case 'Draw Symbol':
-            iconName = 'brush';
-            break;
-          case 'Engraving List':
-            iconName = 'list';
-            break;
-          case 'Manufacturer':
-            iconName = 'business';
-            break;
-          case 'Settings':
-            iconName = 'settings';
-            break;
-          default:
-            iconName = 'help';
-            break;
-        }
-        return <Icon name={iconName} size={size} color={color} />;
-      },
-      tabBarActiveTintColor: 'tomato',
-      tabBarInactiveTintColor: 'gray',
-    })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Draw Symbol" component={DrawSymbolScreen} />
-      <Tab.Screen name="Engraving List" component={EngravingListScreen} />
-      <Tab.Screen name="Manufacturer" component={ManufacturerStack} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Home':
+              iconName = 'home';
+              break;
+            case 'Draw Symbol':
+              iconName = 'brush';
+              break;
+            case 'Engraving List':
+              iconName = 'list';
+              break;
+            case 'Manufacturer':
+              iconName = 'business';
+              break;
+            case 'Settings':
+              iconName = 'settings';
+              break;
+            default:
+              iconName = 'help';
+              break;
+          }
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        headerTitle: route.name, // This will dynamically set the header title
+      })}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: 'Home' }}
+      />
+      <Tab.Screen
+        name="Draw Symbol"
+        component={DrawSymbolScreen}
+        options={{ title: 'Draw Symbol' }}
+      />
+      <Tab.Screen
+        name="Engraving List"
+        component={EngravingListScreen}
+        options={{ title: 'Engraving List' }}
+      />
+      <Tab.Screen
+        name="Manufacturer"
+        component={ManufacturerStack}
+        options={{ title: 'Manufacturer' }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
+      />
     </Tab.Navigator>
   );
 }
@@ -88,7 +120,6 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
-      {/* Section: Optician Contact Information */}
       <View style={styles.drawerSection}>
         <Text style={styles.sectionTitle}>Contact Optician</Text>
         <Text style={styles.opticianInfo}>Phone: +1 123-456-7890</Text>
@@ -98,15 +129,16 @@ function CustomDrawerContent(props) {
   );
 }
 
-// Drawer Navigator without main tabs
+// Drawer navigator
 function DrawerNavigator() {
   return (
     <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen name="MainTabs" component={MainTabs} />
+      <Drawer.Screen name="MainTabs" component={MainTabs}  options={{ headerShown: false }}  />
     </Drawer.Navigator>
   );
 }
 
+// Main app navigator with stack navigation
 export default function AppNavigator() {
   return (
     <NavigationContainer>
@@ -136,3 +168,4 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
