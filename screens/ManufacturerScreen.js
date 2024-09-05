@@ -1,86 +1,50 @@
-// screens/ManufacturerScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-
-const manufacturers = [
-  {
-    id: 1,
-    name: 'Essilor',
-    logo: require('../assets/Essilor_eye_logo.png'),  // Adjust the path accordingly
-    description: 'Essilor is a French-based international ophthalmic optics company.',
-  },
-  {
-    id: 2,
-    name: 'Carl Zeiss Vision',
-    logo: require('../assets/images.png'),  // Adjust the path accordingly
-    description: 'Carl Zeiss Vision is a manufacturer of optical systems and optoelectronics.',
-  },
-  {
-    id: 3,
-    name: 'Hoya Vision Care',
-    logo: require('../assets/Hoya_logo.jpg'),  // Adjust the path accordingly
-    description: 'Hoya is a Japanese company manufacturing optical lenses and healthcare products.',
-  },
-  // Add more manufacturers as needed
-];
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 export default function ManufacturerScreen({ navigation }) {
-  const renderManufacturer = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.manufacturerButton} 
-      onPress={() => navigation.navigate('ManufacturerListScreen', { manufacturer: item })}
-    >
-      <Image source={item.logo} style={styles.logo} />
-      <Text style={styles.manufacturerName}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+  const manufacturers = [
+    { name: 'Essilor', logo: require('../assets/Essilor_eye_logo.png'), screen: 'EssilorScreen' },
+    { name: 'Carl Zeiss Vision', logo: require('../assets/images.png'), screen: 'ZeissScreen' },
+    { name: 'Hoya Vision Care', logo: require('../assets/Hoya_logo.jpg'), screen: 'HoyaScreen' }
+  ];
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={manufacturers}
-        renderItem={renderManufacturer}
-        keyExtractor={item => item.id.toString()}
-        numColumns={3}
-        contentContainerStyle={styles.listContainer}
-      />
+      {manufacturers.map((manufacturer) => (
+        <TouchableOpacity
+          key={manufacturer.name}
+          style={styles.card}
+          onPress={() => navigation.navigate(manufacturer.screen)} // Corrected screen names
+        >
+          <Image source={manufacturer.logo} style={styles.logo} />
+          <Text style={styles.text}>{manufacturer.name}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }
-
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     padding: 10,
   },
-  listContainer: {
-    justifyContent: 'center',
-  },
-  manufacturerButton: {
-    flex: 1,
+  card: {
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 3, // Add shadow for Android
-    shadowColor: '#000', // Add shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    padding: 10,  // Reduced padding
+    borderRadius: 8,  // Slightly smaller border radius
+    backgroundColor: '#FFF',
+    elevation: 5,
+    width: 100,  // Set a fixed width to control the size of the card
   },
   logo: {
-    width: 60,
-    height: 60,
-    marginBottom: 10,
+    width: 60,  // Reduced logo size
+    height: 60,  // Reduced logo size
+    marginBottom: 5,  // Adjusted spacing between logo and text
   },
-  manufacturerName: {
-    fontSize: 14,
+  text: {
+    fontSize: 14,  // Smaller text size
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
   },
 });

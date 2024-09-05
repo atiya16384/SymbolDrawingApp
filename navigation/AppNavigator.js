@@ -16,6 +16,10 @@ import EngravingListScreen from '../screens/EngravingListScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import EssilorScreen from '../screens/manufacturerScreen/EssilorScreen';
+import ZeissScreen from '../screens/manufacturerScreen/ZeissScreen';
+import HoyaScreen from '../screens/manufacturerScreen/HoyaScreen';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,23 +28,17 @@ const Drawer = createDrawerNavigator();
 // Manufacturer stack navigator
 function ManufacturerStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
-        name="ManufacturerScreen" 
-        component={ManufacturerScreen} 
-        options={{ title: 'Manufacturers' }} 
-      />
-      <Stack.Screen 
-        name="ManufacturerListScreen" 
-        component={ManufacturerListScreen} 
-        options={({ route }) => ({
-          title: route.params.manufacturer.name,
-          headerBackTitleVisible: false,
-        })} 
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ManufacturerScreen" component={ManufacturerScreen} />
+      <Stack.Screen name="ManufacturerListScreen" component={ManufacturerListScreen} />
+      {/* Add individual manufacturer screens */}
+      <Stack.Screen name="EssilorScreen" component={EssilorScreen} />
+      <Stack.Screen name="ZeissScreen" component={ZeissScreen} />
+      <Stack.Screen name="HoyaScreen" component={HoyaScreen} />
     </Stack.Navigator>
   );
 }
+
 
 // Lens Matches stack navigator
 function LensMatchesScreenStack() {
@@ -121,9 +119,10 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
       <View style={styles.drawerSection}>
-        <Text style={styles.sectionTitle}>Contact Optician</Text>
-        <Text style={styles.opticianInfo}>Phone: +1 123-456-7890</Text>
-        <Text style={styles.opticianInfo}>Email: optician@example.com</Text>
+        <Text style={styles.sectionTitle}>Contact App Founder</Text>
+        <Text style={styles.sectionTitle}>Usama Yakub</Text>
+        <Text style={styles.opticianInfo}>Phone: 07835894086</Text>
+        <Text style={styles.opticianInfo}>Email: usamayakub@virginmedia.com</Text>
       </View>
     </DrawerContentScrollView>
   );
