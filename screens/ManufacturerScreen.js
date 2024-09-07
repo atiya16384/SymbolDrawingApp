@@ -6,6 +6,7 @@ export default function ManufacturerScreen({ navigation }) {
     { name: 'Essilor', logo: require('../assets/Essilor_eye_logo.png'), screen: 'EssilorScreen' },
     { name: 'Carl Zeiss Vision', logo: require('../assets/images.png'), screen: 'ZeissScreen' },
     { name: 'Hoya Vision Care', logo: require('../assets/Hoya_logo.jpg'), screen: 'HoyaScreen' }
+    
   ];
 
   return (

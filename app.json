@@ -1,4 +1,7 @@
 {
   "name": "SymbolDrawingApp",
-  "displayName": "SymbolDrawingApp"
+  "displayName": "SymbolDrawingApp",
+  "plugins": [
+    "expo-asset"
+  ]
 }

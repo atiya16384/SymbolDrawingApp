@@ -1,12 +1,15 @@
-// screens/ResetPasswordScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, Title } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 
-export default function ResetPasswordScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   // Function to validate email
   const isValidEmail = (email) => {
@@ -17,6 +20,7 @@ export default function ResetPasswordScreen({ navigation }) {
   const validateInputs = () => {
     let isValid = true;
 
+    // Email validation
     if (email === '') {
       setEmailError('Email is required.');
       isValid = false;
@@ -27,16 +31,35 @@ export default function ResetPasswordScreen({ navigation }) {
       setEmailError('');
     }
 
+    // Password validation
+    if (password === '') {
+      setPasswordError('Password is required.');
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      isValid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    // Confirm password validation
+    if (confirmPassword !== password) {
+      setConfirmPasswordError('Passwords do not match.');
+      isValid = false;
+    } else {
+      setConfirmPasswordError('');
+    }
+
     return isValid;
   };
 
-  const resetPassword = async () => {
+  const signUp = async () => {
     if (!validateInputs()) return; // If inputs are not valid, return early
 
     try {
-      await auth().sendPasswordResetEmail(email);
-      Alert.alert('Success', 'Password reset email sent.');
-      navigation.navigate('SignIn'); // Navigate to Sign In after reset
+      await auth().createUserWithEmailAndPassword(email, password);
+      Alert.alert('Success', 'Account created successfully.');
+      navigation.navigate('SignIn'); // Navigate to Sign In after successful sign-up
     } catch (error) {
       handleAuthError(error);
     }
@@ -47,11 +70,14 @@ export default function ResetPasswordScreen({ navigation }) {
     let errorMessage = '';
 
     switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = 'This email address is already in use.';
+        break;
       case 'auth/invalid-email':
         errorMessage = 'Invalid email address format.';
         break;
-      case 'auth/user-not-found':
-        errorMessage = 'No user found with this email.';
+      case 'auth/weak-password':
+        errorMessage = 'Password is too weak.';
         break;
       default:
         errorMessage = 'An unexpected error occurred. Please try again.';
@@ -62,7 +88,7 @@ export default function ResetPasswordScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>Reset Password</Title>
+      <Title style={styles.title}>Sign Up</Title>
       <TextInput
         style={styles.input}
         label="Email"
@@ -74,8 +100,32 @@ export default function ResetPasswordScreen({ navigation }) {
       />
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-      <Button mode="contained" onPress={resetPassword} style={styles.button}>
-        Reset Password
+      <TextInput
+        style={styles.input}
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        secureTextEntry
+        left={<TextInput.Icon name="lock" />}
+        error={!!passwordError} // Error prop for TextInput
+      />
+      {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+
+      <TextInput
+        style={styles.input}
+        label="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        mode="outlined"
+        secureTextEntry
+        left={<TextInput.Icon name="lock" />}
+        error={!!confirmPasswordError} // Error prop for TextInput
+      />
+      {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
+
+      <Button mode="contained" onPress={signUp} style={styles.button}>
+        Sign Up
       </Button>
 
       <Text style={styles.link} onPress={() => navigation.navigate('SignIn')}>

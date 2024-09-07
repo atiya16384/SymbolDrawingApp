@@ -2,6 +2,9 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "jsx": "react-native",
-    "types": ["react", "react-native"]
+    "types": ["react", "react-native"],
+    "allowJs": true,
+    "strict": true,
+    "lib": ["ESNext"]
   }
 }
