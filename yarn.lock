@@ -7004,7 +7004,7 @@ expo-modules-autolinking@1.2.0:
     find-up "^5.0.0"
     fs-extra "^9.1.0"
 
-expo-modules-core@1.12.24:
+expo-modules-core@~1.12.24, expo-modules-core@1.12.24:
   version "1.12.24"
   resolved "https://registry.npmjs.org/expo-modules-core/-/expo-modules-core-1.12.24.tgz"
   integrity sha512-3geIe2ecizlp7l26iY8Nmc59z2d1RUC5nQZtI9iJoi5uHEUV/zut8e4zRLFVnZb8KOcMcEDsrvaBL5DPnqdfpg==
@@ -7029,7 +7029,7 @@ expo-pwa@0.0.125:
     commander "2.20.0"
     update-check "1.5.3"
 
-expo@*, expo@^51.0.31, expo@>=47.0.0:
+expo@*, expo@>=47.0.0:
   version "51.0.32"
   resolved "https://registry.npmjs.org/expo/-/expo-51.0.32.tgz"
   integrity sha512-6GEhYvHRnyS/6BytQagGkClsaqbuwAtlN3A6oDfnNMRKLmz6NE/r+Rjg9zbQgUO6zigqb60Yj5lAX32DmixRDw==
