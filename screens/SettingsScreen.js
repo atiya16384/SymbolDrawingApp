@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
   },
   signOutButtonContainer: {
     alignItems: 'flex-end',
-    marginBottom: 20,
+    marginBottom: 40,  // Increased marginBottom
+    marginTop: 10,     // Added marginTop to move it higher
   },
   optionsContainer: {
     marginTop: 10,
