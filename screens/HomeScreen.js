@@ -57,18 +57,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
-    marginBottom: 15,
+    marginBottom: 0,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
   },
   
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
   },
   instructions: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
     paddingHorizontal: 20,
-    marginBottom: 30,
+    marginBottom: 15,
   },
 });
 

@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { View, Text, StyleSheet } from 'react-native';
-
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import DrawSymbolScreen from '../screens/DrawSymbolScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -19,7 +19,8 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import EssilorScreen from '../screens/manufacturerScreen/EssilorScreen';
 import ZeissScreen from '../screens/manufacturerScreen/ZeissScreen';
 import HoyaScreen from '../screens/manufacturerScreen/HoyaScreen';
-
+import CustomDrawerContent from '../components/CustomDrawerContent'; // Import the custom drawer content
+import HelpScreen from '../screens/HelpScreen';  // Import the HelpScreen
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -113,21 +114,6 @@ function MainTabs() {
   );
 }
 
-// Custom drawer content for contact info
-function CustomDrawerContent(props) {
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <View style={styles.drawerSection}>
-        <Text style={styles.sectionTitle}>Contact App Founder</Text>
-        <Text style={styles.sectionTitle}>Usama Yakub</Text>
-        <Text style={styles.opticianInfo}>Phone: 07835894086</Text>
-        <Text style={styles.opticianInfo}>Email: usamayakub@virginmedia.com</Text>
-      </View>
-    </DrawerContentScrollView>
-  );
-}
-
 // Drawer navigator
 function DrawerNavigator() {
   return (
@@ -151,20 +137,5 @@ export default function AppNavigator() {
   );
 }
 
-// Styling for drawer contact information
-const styles = StyleSheet.create({
-  drawerSection: {
-    marginTop: 20,
-    paddingHorizontal: 15,
-  },
-  sectionTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  opticianInfo: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-});
+//
 
