@@ -19,6 +19,25 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import EssilorScreen from '../screens/manufacturerScreen/EssilorScreen';
 import ZeissScreen from '../screens/manufacturerScreen/ZeissScreen';
 import HoyaScreen from '../screens/manufacturerScreen/HoyaScreen';
+import AmericanOpticalScreen from '../screens/manufacturerScreen/AmericanOpticalScreen';
+import JaiKudoScreen from '../screens/manufacturerScreen/JaiKudoScreen';
+
+import NikonScreen from '../screens/manufacturerScreen/NikonScreen';
+import NorvilleScreen from '../screens/manufacturerScreen/NorvilleScreen';
+
+import RodenstockScreen from '../screens/manufacturerScreen/RodenStockScreen';
+
+import PentaxScreen from '../screens/manufacturerScreen/PentaxScreen';
+import SeikoScreen from '../screens/manufacturerScreen/SeikoScreen';
+import ShamirScreen from '../screens/manufacturerScreen/ShamirScreen';
+import SignetArmoliteScreen from '../screens/manufacturerScreen/SignetArmoliteScreen';
+import WlcScreen from '../screens/manufacturerScreen/WlcScreen';
+
+
+
+
+
+
 import CustomDrawerContent from '../components/CustomDrawerContent'; // Import the custom drawer content
 import HelpScreen from '../screens/HelpScreen';  // Import the HelpScreen
 
@@ -36,6 +55,16 @@ function ManufacturerStack() {
       <Stack.Screen name="EssilorScreen" component={EssilorScreen} />
       <Stack.Screen name="ZeissScreen" component={ZeissScreen} />
       <Stack.Screen name="HoyaScreen" component={HoyaScreen} />
+      <Stack.Screen name="AmericanOpticalScreen" component={AmericanOpticalScreen} />
+      <Stack.Screen name="JaiKudoScreen" component={JaiKudoScreen} />
+      <Stack.Screen name="NikonScreen" component={NikonScreen} />
+      <Stack.Screen name="NorvilleScreen" component={NorvilleScreen} />
+      <Stack.Screen name="RodenstockScreen" component={RodenstockScreen} />
+      <Stack.Screen name="PentaxScreen" component={PentaxScreen} />
+      <Stack.Screen name="SeikoScreen" component={SeikoScreen} />
+      <Stack.Screen name="ShamirScreen" component={ShamirScreen} />
+      <Stack.Screen name="SignetArmoliteScreen" component={SignetArmoliteScreen} />
+      <Stack.Screen name="WlcScreen" component={WlcScreen} />
     </Stack.Navigator>
   );
 }

@@ -1,51 +1,70 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 
 export default function ManufacturerScreen({ navigation }) {
   const manufacturers = [
     { name: 'Essilor', logo: require('../assets/Essilor_eye_logo.png'), screen: 'EssilorScreen' },
     { name: 'Carl Zeiss Vision', logo: require('../assets/images.png'), screen: 'ZeissScreen' },
-    { name: 'Hoya Vision Care', logo: require('../assets/Hoya_logo.jpg'), screen: 'HoyaScreen' }
-    
+    { name: 'Hoya Vision Care', logo: require('../assets/Hoya_logo.jpg'), screen: 'HoyaScreen' },
+    {name: 'American Optical', logo: require('../assets/American_Optical.jpg'), screen: 'AmericanOpticalScreen'},
+    { name: 'Jai Kudo', logo: require('../assets/Jai-Kudo-Logo.jpg'), screen: 'JaiKudoScreen' },
+    { name: 'Nikon', logo: require('../assets/Nikon-logo.png'), screen: 'NikonScreen' },
+    { name: 'Norville', logo: require('../assets/Norville-logo.png'), screen: 'NorvilleScreen' },
+    { name: 'Rodenstock', logo: require('../assets/rodenstock-logo.png'), screen: 'RodenstockScreen' },
+    { name: 'Pentax', logo: require('../assets/pentex-logo.png'), screen: 'PentaxScreen' },
+    { name: 'Seiko', logo: require('../assets/seiko-logo.jpg'), screen: 'SeikoScreen' },
+    { name: 'Shamir', logo: require('../assets/shamir-logo.png'), screen: 'ShamirScreen' },
+    { name: 'Signet Armorlite', logo: require('../assets/signet-logo.png'), screen: 'SignetArmoliteScreen' },
+    { name: 'WLC', logo: require('../assets/wlc-logo.png'), screen: 'WlcScreen' },
   ];
 
   return (
-    <View style={styles.container}>
-      {manufacturers.map((manufacturer) => (
-        <TouchableOpacity
-          key={manufacturer.name}
-          style={styles.card}
-          onPress={() => navigation.navigate(manufacturer.screen)} // Corrected screen names
-        >
-          <Image source={manufacturer.logo} style={styles.logo} />
-          <Text style={styles.text}>{manufacturer.name}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        {manufacturers.map((manufacturer) => (
+          <TouchableOpacity
+            key={manufacturer.name}
+            style={styles.card}
+            onPress={() => navigation.navigate(manufacturer.screen)}
+          >
+            <Image source={manufacturer.logo} style={styles.logo} />
+            <Text style={styles.text}>{manufacturer.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
+    flexWrap: 'wrap',  // Allows cards to wrap to the next row
+    justifyContent: 'space-between',  // Distribute cards evenly
+    paddingHorizontal: 20,
   },
   card: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,  // Reduced padding
-    borderRadius: 8,  // Slightly smaller border radius
+    padding: 0,
+    marginVertical: 10,
+    borderRadius: 10,
     backgroundColor: '#FFF',
-    elevation: 5,
-    width: 100,  // Set a fixed width to control the size of the card
+    elevation: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    width: '40%',  // Set width to 30% to fit 3 cards per row
   },
   logo: {
-    width: 60,  // Reduced logo size
-    height: 60,  // Reduced logo size
-    marginBottom: 5,  // Adjusted spacing between logo and text
+    width: 100,
+    height: 100,
+    marginBottom: 8,
   },
   text: {
-    fontSize: 14,  // Smaller text size
+    fontSize: 12,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
