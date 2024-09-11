@@ -37,34 +37,52 @@ export default function DrawSymbolScreen({ navigation }) {
     },
   });
 
+  // Function to create a folder and save the drawing
   const saveDrawing = async () => {
     try {
+      // Create a folder called "Drawings" in the document directory
+      const drawingsDir = `${RNFS.DocumentDirectoryPath}/Drawings`;
+      const folderExists = await RNFS.exists(drawingsDir);
+      if (!folderExists) {
+        await RNFS.mkdir(drawingsDir);  // Create the directory if it doesn't exist
+      }
+
+      // Save the SVG content
       const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         ${paths.map((d) => `<path d="${d}" stroke="#000" strokeWidth="3" fill="none"/>`).join('')}
       </svg>`;
-      const fileUri = `${RNFS.DocumentDirectoryPath}/user_drawing.svg`;
-      await RNFS.writeFile(fileUri, svgContent, 'utf8');
-      return fileUri;
+
+      // Create a file name and path to store the drawing
+      const fileName = `drawing_${Date.now()}.svg`;
+      const filePath = `${drawingsDir}/${fileName}`;
+
+      // Write the file
+      await RNFS.writeFile(filePath, svgContent, 'utf8');
+      
+      console.log('Saved file path:', filePath);  // Log the file path for debugging
+      return filePath;
+
     } catch (error) {
       console.error('Error saving drawing:', error);
     }
   };
 
+  // Handle the "Search" action
   const handleSearch = async () => {
     const fileUri = await saveDrawing();
     if (fileUri) {
-      fetch('http://192.168.0.17:5001/predict', {
+      fetch('http://192.168.0.19:5000/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          imageUri: fileUri,
+          imageUri: fileUri,  // Send the file URI
         }),
       })
         .then(response => response.json())
         .then(data => {
-          navigation.navigate('LensMatches', { matches: data.matches });
+          navigation.navigate('LensMatchesScreen', { matches: data.matches });
         })
         .catch(error => {
           console.error('Error:', error);
