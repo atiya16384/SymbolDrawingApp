@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function HoyaScreen({navigation}) {
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     },
     backButton: {
       position: 'absolute',
-      top: 50,
-      left: 20,
+      top: 0,
+      left: -10,
       flexDirection: 'row',
       alignItems: 'center',
     },

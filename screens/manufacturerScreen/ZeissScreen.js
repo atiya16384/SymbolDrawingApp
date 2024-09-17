@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';  // <-- Add ScrollView import
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function ZeissScreen({navigation}) {
@@ -26,7 +26,7 @@ export default function ZeissScreen({navigation}) {
           Zeiss is known for its pioneering technologies such as the freeform lens design, enabling the highest precision and customization for vision correction. They also offer smart lenses for augmented reality applications.
         </Text>
       </View>
-  </ScrollView>
+    </ScrollView>
   );
 }
 
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     },
     backButton: {
       position: 'absolute',
-      top: 50,
-      left: 20,
+      top: -10,
+      left: -20,
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginBottom: 20,
     },
-  });
+});

@@ -43,6 +43,7 @@ export default function DrawSymbolScreen({ navigation }) {
       // Create a folder called "Drawings" in the document directory
       const drawingsDir = `${RNFS.DocumentDirectoryPath}/Drawings`;
       const folderExists = await RNFS.exists(drawingsDir);
+      
       if (!folderExists) {
         await RNFS.mkdir(drawingsDir);  // Create the directory if it doesn't exist
       }
@@ -67,18 +68,26 @@ export default function DrawSymbolScreen({ navigation }) {
     }
   };
 
-  // Handle the "Search" action
+
+
   const handleSearch = async () => {
     const fileUri = await saveDrawing();
     if (fileUri) {
-      fetch('http://192.168.0.19:5000/predict', {
+      const file = {
+        uri: fileUri,
+        name: `drawing_${Date.now()}.svg`,
+        type: 'image/svg+xml'
+      };
+  
+      const formData = new FormData();
+      formData.append('image', file);
+  
+      fetch('http://10.0.2.2:5000/predict', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify({
-          imageUri: fileUri,  // Send the file URI
-        }),
+        body: formData,
       })
         .then(response => response.json())
         .then(data => {
@@ -90,6 +99,7 @@ export default function DrawSymbolScreen({ navigation }) {
         });
     }
   };
+  
 
   const clearCanvas = () => {
     setPaths([]);  // Clear all paths
