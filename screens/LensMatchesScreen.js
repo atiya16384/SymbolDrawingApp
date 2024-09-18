@@ -17,9 +17,13 @@ export default function LensMatchesScreen({ route }) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <Image source={{ uri: item.url }} style={styles.image} />
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.manufacturer}>{item.manufacturer}</Text>
+              <Text style={styles.index}>Index: {item.index}</Text>
+              <Text style={styles.fitting_cross}>Fitting Cross: {item.fitting_cross}</Text>
+              {item.engraving_ref && (
+                <Image source={{ uri: item.engraving_ref }} style={styles.image} />
+              )}
             </View>
           )}
         />
@@ -29,7 +33,6 @@ export default function LensMatchesScreen({ route }) {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -54,7 +57,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  description: {
+  manufacturer: {
+    fontSize: 16,
+    color: '#666',
+  },
+  fitting_cross: {
     fontSize: 16,
     color: '#666',
   },
