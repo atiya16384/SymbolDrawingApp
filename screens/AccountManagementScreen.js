@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 export default function AccountManagementScreen({ navigation }) {
@@ -75,7 +75,10 @@ export default function AccountManagementScreen({ navigation }) {
         keyboardType="email-address"
       />
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-      <Button title="Update Email" onPress={handleUpdateEmail} color="#800080" />
+
+      <TouchableOpacity style={styles.button} onPress={handleUpdateEmail}>
+        <Text style={styles.buttonText}>Update Email</Text>
+      </TouchableOpacity>
 
       {/* Password Input */}
       <TextInput
@@ -86,10 +89,15 @@ export default function AccountManagementScreen({ navigation }) {
         secureTextEntry
       />
       {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-      <Button title="Update Password" onPress={handleUpdatePassword} color="#800080" />
+
+      <TouchableOpacity style={styles.button} onPress={handleUpdatePassword}>
+        <Text style={styles.buttonText}>Update Password</Text>
+      </TouchableOpacity>
 
       {/* Back Button */}
-      <Button title="Back to Settings" onPress={() => navigation.goBack()} color="#800080" />
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>Back to Settings</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -105,20 +113,39 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#800080',  // Purple text color for the title
+    color: '#4A148C',  // Darker purple color for title
     textAlign: 'center',
   },
   input: {
     height: 50,
-    borderColor: '#800080',  // Purple border color for the input
-    borderWidth: 2,
+    borderColor: '#7E57C2',  // Lighter purple border color
+    borderWidth: 1.5,
     borderRadius: 5,
-    marginBottom: 10,
-    paddingLeft: 10,
+    marginBottom: 20,
+    paddingLeft: 15,
     backgroundColor: '#fff',  // White background for input fields
   },
   button: {
+    backgroundColor: '#673AB7',  // Matching purple button color
+    borderRadius: 25,  // Rounded button
+    paddingVertical: 15,
     marginBottom: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  backButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  backButtonText: {
+    color: '#7E57C2',  // Matching purple text for back button
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   errorText: {
     color: 'red',
