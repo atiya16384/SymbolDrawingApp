@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer ,DefaultTheme, DarkTheme} from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -32,6 +32,9 @@ import ShamirScreen from '../screens/manufacturerScreen/ShamirScreen';
 import SignetArmoliteScreen from '../screens/manufacturerScreen/SignetArmoliteScreen';
 import WlcScreen from '../screens/manufacturerScreen/WlcScreen';
 import HelpScreen from '../screens/HelpScreen';
+import AccountManagementScreen from '../screens/AccountManagementScreen';  // Placeholder screen
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';  // Placeholder screen
+import TermsOfServiceScreen from '../screens/TermsOfServiceScreen';  // Placeholder screen
 
 
 
@@ -246,6 +249,12 @@ export default function AppNavigator() {
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Main" component={DrawerNavigator} />
+        <Stack.Screen name="Account Management" component={AccountManagementScreen} />
+        <Stack.Screen name="Privacy Policy" component={PrivacyPolicyScreen} />
+        <Stack.Screen name="Terms of Service" component={TermsOfServiceScreen} />
+        <Stack.Screen name="Settings">
+          {(props) => <SettingsScreen {...props} theme={theme} setTheme={setTheme} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

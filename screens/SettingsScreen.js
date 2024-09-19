@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Switch, Text, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-paper';
+import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import SignOutButton from '../components/SignOutButton';
 
-export default function SettingsScreen({ navigation }) {
+export default function SettingsScreen({ navigation, theme, setTheme }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkThemeEnabled, setIsDarkThemeEnabled] = useState(theme === DarkTheme);
 
-  const toggleNotifications = () => setIsNotificationsEnabled(!isNotificationsEnabled);
-  const toggleTheme = () => setIsDarkTheme(!isDarkTheme);
+  // Function to toggle dark theme
+  const toggleTheme = () => {
+    const newTheme = isDarkThemeEnabled ? DefaultTheme : DarkTheme;
+    setTheme(newTheme);  // Set the theme in the parent navigator
+    setIsDarkThemeEnabled(!isDarkThemeEnabled);
+  };
 
   return (
     <View style={styles.container}>
@@ -19,31 +24,31 @@ export default function SettingsScreen({ navigation }) {
       <View style={styles.optionsContainer}>
         <View style={styles.option}>
           <Text style={styles.optionText}>Enable Notifications</Text>
-          <Switch value={isNotificationsEnabled} onValueChange={toggleNotifications} />
+          <Switch value={isNotificationsEnabled} onValueChange={() => setIsNotificationsEnabled(!isNotificationsEnabled)} />
         </View>
 
         <Divider style={styles.divider} />
 
         <View style={styles.option}>
           <Text style={styles.optionText}>Dark Theme</Text>
-          <Switch value={isDarkTheme} onValueChange={toggleTheme} />
+          <Switch value={isDarkThemeEnabled} onValueChange={toggleTheme} />
         </View>
 
         <Divider style={styles.divider} />
 
-        <TouchableOpacity style={styles.option} onPress={() => {/* Navigate to Account Management */}}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Account Management')}>
           <Text style={styles.optionText}>Account Management</Text>
         </TouchableOpacity>
 
         <Divider style={styles.divider} />
 
-        <TouchableOpacity style={styles.option} onPress={() => {/* Navigate to Privacy Policy */}}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Privacy Policy')}>
           <Text style={styles.optionText}>Privacy Policy</Text>
         </TouchableOpacity>
 
         <Divider style={styles.divider} />
 
-        <TouchableOpacity style={styles.option} onPress={() => {/* Navigate to Terms of Service */}}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Terms of Service')}>
           <Text style={styles.optionText}>Terms of Service</Text>
         </TouchableOpacity>
       </View>
@@ -60,8 +65,8 @@ const styles = StyleSheet.create({
   },
   signOutButtonContainer: {
     alignItems: 'flex-end',
-    marginBottom: 40,  // Increased marginBottom
-    marginTop: 10,     // Added marginTop to move it higher
+    marginBottom: 40,  
+    marginTop: 10,
   },
   optionsContainer: {
     marginTop: 10,

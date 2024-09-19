@@ -1,46 +1,64 @@
-import React, { useRef, useState } from 'react';
-import { View, StyleSheet, PanResponder, TouchableOpacity, Text, Alert } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import React, { useState } from 'react';
+import { View, StyleSheet, PanResponder, TouchableOpacity, Image, Modal, Button, TextInput } from 'react-native';
+import Svg, { Path, Text as SvgText } from 'react-native-svg';
 import RNFS from 'react-native-fs';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Text } from 'react-native';
 
 export default function DrawSymbolScreen({ navigation }) {
   const [paths, setPaths] = useState([]);  // Store all drawn paths
   const [currentPath, setCurrentPath] = useState('');  // Track the current drawing path
   const [layout, setLayout] = useState(null);  // Store canvas layout
+  const [brushSize, setBrushSize] = useState(3); // Control brush size
+  const [brushColor, setBrushColor] = useState('#000');  // Control brush color
+  const [isBrushSelectorVisible, setBrushSelectorVisible] = useState(false);  // Brush selector modal visibility
+  const [isTextMode, setTextMode] = useState(false);  // Whether to add text
+  const [inputText, setInputText] = useState('');  // Text input for the "T" tool
+  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 }); // Track cursor position
+  const [selectedTool, setSelectedTool] = useState('brush'); // Track the selected tool (brush or eraser)
+  const [isEraserSelectorVisible, setEraserSelectorVisible] = useState(false);  // Eraser size modal visibility
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: (evt) => {
-      if (layout) {
+      if (layout && !isTextMode) {
         const startX = evt.nativeEvent.locationX;
         const startY = evt.nativeEvent.locationY;
+        setCursorPosition({ x: startX, y: startY }); // Update cursor position
+
         const newPath = `M${startX.toFixed(2)},${startY.toFixed(2)}`;
         setCurrentPath(newPath);  // Start a new path
-      } else {
-        Alert.alert('Error', 'Canvas layout not available.');
+      } else if (isTextMode) {
+        const startX = evt.nativeEvent.locationX;
+        const startY = evt.nativeEvent.locationY;
+        const textPath = { type: 'text', x: startX, y: startY, text: inputText, size: brushSize, color: brushColor };
+        setPaths([...paths, textPath]);
+        setTextMode(false);
       }
     },
     onPanResponderMove: (evt) => {
-      if (layout) {
-        const adjustedX = evt.nativeEvent.locationX;
-        const adjustedY = evt.nativeEvent.locationY;
+      const adjustedX = evt.nativeEvent.locationX;
+      const adjustedY = evt.nativeEvent.locationY;
 
-        if (!isNaN(adjustedX) && !isNaN(adjustedY)) {
-          const updatedPath = `${currentPath} L${adjustedX.toFixed(2)},${adjustedY.toFixed(2)}`;
-          setCurrentPath(updatedPath);  // Update the current path
-        }
+      setCursorPosition({ x: adjustedX - 10, y: adjustedY - 10 }); // Center cursor icon over drawing point
+
+      if (!isNaN(adjustedX) && !isNaN(adjustedY) && layout && !isTextMode) {
+        const updatedPath = `${currentPath} L${adjustedX.toFixed(2)},${adjustedY.toFixed(2)}`;
+        setCurrentPath(updatedPath);  // Update the current path
       }
     },
     onPanResponderRelease: () => {
-      setPaths((prevPaths) => [...prevPaths, currentPath]);  // Save the current path in the paths array
-      setCurrentPath('');  // Reset the current path
+      setCursorPosition({ x: -100, y: -100 }); // Hide cursor when drawing is done
+
+      if (!isTextMode) {
+        setPaths((prevPaths) => [...prevPaths, { d: currentPath, strokeWidth: brushSize, strokeColor: brushColor }]);
+        setCurrentPath('');  // Reset the current path
+      }
     },
   });
 
-  // Function to create a folder and save the drawing
   const saveDrawing = async () => {
     try {
-      // Create a folder called "Drawings" in the document directory
       const drawingsDir = `${RNFS.DocumentDirectoryPath}/Drawings`;
       const folderExists = await RNFS.exists(drawingsDir);
       
@@ -48,27 +66,24 @@ export default function DrawSymbolScreen({ navigation }) {
         await RNFS.mkdir(drawingsDir);  // Create the directory if it doesn't exist
       }
 
-      // Save the SVG content
       const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-        ${paths.map((d) => `<path d="${d}" stroke="#000" strokeWidth="3" fill="none"/>`).join('')}
+        ${paths.map((path) => 
+          path.type === 'text' 
+            ? `<text x="${path.x}" y="${path.y}" font-size="${path.size}" fill="${path.color}">${path.text}</text>` 
+            : `<path d="${path.d}" stroke="${path.strokeColor}" strokeWidth="${path.strokeWidth}" fill="none"/>`
+        ).join('')}
       </svg>`;
 
-      // Create a file name and path to store the drawing
       const fileName = `drawing_${Date.now()}.svg`;
       const filePath = `${drawingsDir}/${fileName}`;
 
-      // Write the file
       await RNFS.writeFile(filePath, svgContent, 'utf8');
-      
-      console.log('Saved file path:', filePath);  // Log the file path for debugging
+      console.log('Saved file path:', filePath);
       return filePath;
-
     } catch (error) {
       console.error('Error saving drawing:', error);
     }
   };
-
-
 
   const handleSearch = async () => {
     const fileUri = await saveDrawing();
@@ -99,7 +114,6 @@ export default function DrawSymbolScreen({ navigation }) {
         });
     }
   };
-  
 
   const clearCanvas = () => {
     setPaths([]);  // Clear all paths
@@ -107,6 +121,21 @@ export default function DrawSymbolScreen({ navigation }) {
 
   const undoLastPath = () => {
     setPaths((prevPaths) => prevPaths.slice(0, -1));  // Remove the last path
+  };
+
+  const selectBrush = (color, size) => {
+    setBrushColor(color);
+    setBrushSize(size);
+    setBrushSelectorVisible(false);
+  };
+
+  const renderCursorIcon = () => {
+    if (selectedTool === 'brush') {
+      return <Image source={require('../assets/brush.png')} style={styles.cursorIcon} />;
+    } else if (selectedTool === 'eraser') {
+      return <Image source={require('../assets/rubber.png')} style={styles.cursorIcon} />;
+    }
+    return null;
   };
 
   return (
@@ -126,27 +155,92 @@ export default function DrawSymbolScreen({ navigation }) {
         }}
       >
         <Svg height="100%" width="100%">
-          {paths.map((d, index) => (
-            <Path key={index} d={d} stroke="#000" strokeWidth={3} fill="none" />
+          {paths.map((path, index) => (
+            path.type === 'text'
+              ? <SvgText key={index} x={path.x} y={path.y} fontSize={path.size} fill={path.color}>{path.text}</SvgText>
+              : <Path key={index} d={path.d} stroke={path.strokeColor} strokeWidth={path.strokeWidth} fill="none" />
           ))}
           {currentPath && (
-            <Path d={currentPath} stroke="#000" strokeWidth={3} fill="none" />
+            <Path d={currentPath} stroke={brushColor} strokeWidth={brushSize} fill="none" />
           )}
         </Svg>
+      </View>
+
+      {/* Cursor Icon */}
+      <View style={[styles.cursorIconContainer, { top: cursorPosition.y, left: cursorPosition.x }]}>
+        {renderCursorIcon()}
       </View>
 
       {/* Tool Bar */}
       <View style={styles.toolBar}>
         <TouchableOpacity style={styles.toolButton} onPress={clearCanvas}>
+          <Icon name="delete" size={20} color="#fff" />
           <Text style={styles.buttonText}>Clear</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.toolButton} onPress={undoLastPath}>
+          <Icon name="undo" size={20} color="#fff" />
           <Text style={styles.buttonText}>Undo</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.toolButton} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Search</Text>
+        <TouchableOpacity style={styles.toolButton} onPress={() => { setBrushSelectorVisible(true); setSelectedTool('brush'); }}>
+          <Icon name="brush" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Brush</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.toolButton} onPress={() => setTextMode(true)}>
+          <Icon name="text-fields" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Text</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.toolButton} onPress={() => { setSelectedTool('eraser'); setEraserSelectorVisible(true); }}>
+          <Icon name="edit" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Eraser</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Brush Selector Modal */}
+      <Modal transparent={true} visible={isBrushSelectorVisible}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Choose Brush</Text>
+          <View style={styles.brushOptions}>
+            <TouchableOpacity onPress={() => selectBrush('#000', 3)}>
+              <Image source={require('../assets/thin_brush.png')} style={styles.brushIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => selectBrush('blue', 5)}>
+              <Image source={require('../assets/medium_brush.png')} style={styles.brushIcon} />
+            </TouchableOpacity>
+          </View>
+          <Button title="Close" onPress={() => setBrushSelectorVisible(false)} />
+        </View>
+      </Modal>
+
+      {/* Eraser Selector Modal */}
+      <Modal transparent={true} visible={isEraserSelectorVisible}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Choose Eraser Size</Text>
+          <View style={styles.brushOptions}>
+            <TouchableOpacity onPress={() => selectBrush('#FFF', 3)}>
+              <Image source={require('../assets/small_eraser.png')} style={styles.brushIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => selectBrush('#FFF', 10)}>
+              <Image source={require('../assets/large_eraser.png')} style={styles.brushIcon} />
+            </TouchableOpacity>
+          </View>
+          <Button title="Close" onPress={() => setEraserSelectorVisible(false)} />
+        </View>
+      </Modal>
+
+      {/* Text Input Modal for adding text */}
+      {isTextMode && (
+        <Modal transparent={true} visible={true}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter text"
+              value={inputText}
+              onChangeText={setInputText}
+            />
+            <Button title="Add Text" onPress={() => setTextMode(false)} />
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -160,8 +254,8 @@ const styles = StyleSheet.create({
   },
   canvas: {
     width: '90%',
-    height: '65%',  // Adjusted height
-    borderColor: '#5E35B1',  // More consistent color for the border
+    height: '65%',
+    borderColor: '#5E35B1',
     borderWidth: 3,
     borderRadius: 10,
     backgroundColor: '#ffffff',
@@ -173,26 +267,60 @@ const styles = StyleSheet.create({
     width: '90%',
     padding: 12,
     backgroundColor: '#4527A0',
-    borderRadius: 12,  // Rounded corners for toolbar
-    marginTop: 20,  // Moved toolbar lower
+    borderRadius: 12,
+    marginTop: 20,
   },
   toolButton: {
     flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 14,  // Adjusted padding for button size
-    backgroundColor: '#673AB7',  // Harmonized color with toolbar
-    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 3,  // Shadow for Android
-    shadowColor: '#000',  // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
   },
   buttonText: {
     color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 12,
+  },
+  cursorIconContainer: {
+    position: 'absolute',
+    zIndex: 10,
+    pointerEvents: 'none', // Allows drawing to happen under the cursor
+  },
+  modalView: {
+    marginTop: 100,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  brushOptions: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  brushOption: {
+    padding: 10,
     fontSize: 16,
+  },
+  textInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    width: '80%',
+    textAlign: 'center',
+  },
+  cursorIcon: {
+    width: 20, // Smaller icon size for better alignment
+    height: 20,
+  },
+  brushIcon: {
+    width: 30,
+    height: 30,  // Set brush icon size for dropdown
+    marginBottom: 10,
   },
 });
