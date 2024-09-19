@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer ,DefaultTheme, DarkTheme} from '@react-navigation/native';
+import { NavigationContainer} from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -252,9 +252,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Account Management" component={AccountManagementScreen} />
         <Stack.Screen name="Privacy Policy" component={PrivacyPolicyScreen} />
         <Stack.Screen name="Terms of Service" component={TermsOfServiceScreen} />
-        <Stack.Screen name="Settings">
-          {(props) => <SettingsScreen {...props} theme={theme} setTheme={setTheme} />}
-        </Stack.Screen>
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -40,7 +40,7 @@ export default function DrawSymbolScreen({ navigation }) {
       const adjustedX = evt.nativeEvent.locationX;
       const adjustedY = evt.nativeEvent.locationY;
 
-      setCursorPosition({ x: adjustedX - 10, y: adjustedY - 10 }); // Center cursor icon over drawing point
+      setCursorPosition({ x: adjustedX + 22, y: adjustedY + 22 }); // Center cursor icon over drawing point- adjust this to allign icon to cursor
 
       if (!isNaN(adjustedX) && !isNaN(adjustedY) && layout && !isTextMode) {
         const updatedPath = `${currentPath} L${adjustedX.toFixed(2)},${adjustedY.toFixed(2)}`;
@@ -129,6 +129,12 @@ export default function DrawSymbolScreen({ navigation }) {
     setBrushSelectorVisible(false);
   };
 
+  const selectEraser = (size) => {
+    setBrushSize(size);
+    setBrushColor('#FFF');  // Set eraser color to white
+    setEraserSelectorVisible(false);
+  };
+
   const renderCursorIcon = () => {
     if (selectedTool === 'brush') {
       return <Image source={require('../assets/brush.png')} style={styles.cursorIcon} />;
@@ -199,15 +205,15 @@ export default function DrawSymbolScreen({ navigation }) {
       <Modal transparent={true} visible={isBrushSelectorVisible}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Choose Brush</Text>
-          <View style={styles.brushOptions}>
+          <View style={styles.verticalOptions}>
             <TouchableOpacity onPress={() => selectBrush('#000', 3)}>
-              <Image source={require('../assets/thin_brush.png')} style={styles.brushIcon} />
+              <Image source={require('../assets/thin_brush.png')} style={styles.optionImage} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectBrush('blue', 5)}>
-              <Image source={require('../assets/medium_brush.png')} style={styles.brushIcon} />
+            <TouchableOpacity onPress={() => selectBrush('#000', 5)}>
+              <Image source={require('../assets/medium_brush.png')} style={styles.optionImage} />
             </TouchableOpacity>
           </View>
-          <Button title="Close" onPress={() => setBrushSelectorVisible(false)} />
+          <Button title="CLOSE" onPress={() => setBrushSelectorVisible(false)} />
         </View>
       </Modal>
 
@@ -215,15 +221,15 @@ export default function DrawSymbolScreen({ navigation }) {
       <Modal transparent={true} visible={isEraserSelectorVisible}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Choose Eraser Size</Text>
-          <View style={styles.brushOptions}>
-            <TouchableOpacity onPress={() => selectBrush('#FFF', 3)}>
-              <Image source={require('../assets/small_eraser.png')} style={styles.brushIcon} />
+          <View style={styles.verticalOptions}>
+            <TouchableOpacity onPress={() => selectEraser(5)}>
+              <Image source={require('../assets/small_eraser.png')} style={styles.optionImage} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectBrush('#FFF', 10)}>
-              <Image source={require('../assets/large_eraser.png')} style={styles.brushIcon} />
+            <TouchableOpacity onPress={() => selectEraser(15)}>
+              <Image source={require('../assets/large_eraser.png')} style={styles.optionImage} />
             </TouchableOpacity>
           </View>
-          <Button title="Close" onPress={() => setEraserSelectorVisible(false)} />
+          <Button title="CLOSE" onPress={() => setEraserSelectorVisible(false)} />
         </View>
       </Modal>
 
@@ -298,13 +304,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
   },
-  brushOptions: {
+  verticalOptions: {
     flexDirection: 'column',
     alignItems: 'center',
+    marginBottom: 20,
   },
-  brushOption: {
-    padding: 10,
-    fontSize: 16,
+  optionImage: {
+    width: 50, // Adjusted for better visibility
+    height: 50,
+    marginBottom: 10,
   },
   textInput: {
     height: 40,
@@ -315,12 +323,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cursorIcon: {
-    width: 20, // Smaller icon size for better alignment
-    height: 20,
-  },
-  brushIcon: {
-    width: 30,
-    height: 30,  // Set brush icon size for dropdown
-    marginBottom: 10,
+    width: 30,  // Smaller icon size for better alignment
+    height: 30,
   },
 });

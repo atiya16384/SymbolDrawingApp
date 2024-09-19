@@ -1,75 +1,95 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import firebase from '@react-native-firebase/auth';
+import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 export default function AccountManagementScreen({ navigation }) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-  // Update email
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleUpdateEmail = () => {
-    const user = firebase.auth().currentUser;
+    if (!email) {
+      setEmailError('Email cannot be empty');
+      return;
+    }
 
-    user.updateEmail(email)
-      .then(() => {
-        Alert.alert('Email updated!', 'Your email has been updated successfully.');
-      })
-      .catch(error => {
-        Alert.alert('Error', error.message);
-      });
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email format');
+      return;
+    }
+
+    const user = auth().currentUser;
+
+    if (user) {
+      user.updateEmail(email)
+        .then(() => {
+          Alert.alert('Success', 'Email updated successfully!');
+          setEmailError('');
+        })
+        .catch((error) => {
+          Alert.alert('Error', error.message);
+        });
+    } else {
+      Alert.alert('Error', 'No user is logged in');
+    }
   };
 
-  // Update password
   const handleUpdatePassword = () => {
-    const user = firebase.auth().currentUser;
+    if (!newPassword || newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+      return;
+    }
 
-    user.updatePassword(newPassword)
-      .then(() => {
-        Alert.alert('Password updated!', 'Your password has been updated successfully.');
-      })
-      .catch(error => {
-        Alert.alert('Error', error.message);
-      });
-  };
+    const user = auth().currentUser;
 
-  // Sign out user
-  const handleSignOut = () => {
-    firebase.auth().signOut()
-      .then(() => {
-        navigation.navigate('SignIn'); // Navigate back to SignIn on logout
-      })
-      .catch(error => {
-        Alert.alert('Error', error.message);
-      });
+    if (user) {
+      user.updatePassword(newPassword)
+        .then(() => {
+          Alert.alert('Success', 'Password updated successfully!');
+          setPasswordError('');
+        })
+        .catch((error) => {
+          Alert.alert('Error', error.message);
+        });
+    } else {
+      Alert.alert('Error', 'No user is logged in');
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Account Management</Text>
 
+      {/* Email Input */}
       <TextInput
+        style={styles.input}
         placeholder="New Email"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
         keyboardType="email-address"
       />
-      <Button title="Update Email" onPress={handleUpdateEmail} />
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+      <Button title="Update Email" onPress={handleUpdateEmail} color="#800080" />
 
+      {/* Password Input */}
       <TextInput
+        style={styles.input}
         placeholder="New Password"
         value={newPassword}
         onChangeText={setNewPassword}
-        style={styles.input}
         secureTextEntry
       />
-      <Button title="Update Password" onPress={handleUpdatePassword} />
-
-      <Button title="Sign Out" color="red" onPress={handleSignOut} />
+      {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+      <Button title="Update Password" onPress={handleUpdatePassword} color="#800080" />
 
       {/* Back Button */}
-      <Button title="Back to Settings" onPress={() => navigation.goBack()} />
+      <Button title="Back to Settings" onPress={() => navigation.goBack()} color="#800080" />
     </View>
   );
 }
@@ -77,20 +97,33 @@ export default function AccountManagementScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',  // Light background color
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#800080',  // Purple text color for the title
     textAlign: 'center',
   },
   input: {
     height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 20,
+    borderColor: '#800080',  // Purple border color for the input
+    borderWidth: 2,
+    borderRadius: 5,
+    marginBottom: 10,
     paddingLeft: 10,
+    backgroundColor: '#fff',  // White background for input fields
+  },
+  button: {
+    marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    marginLeft: 5,
+    fontSize: 12,
   },
 });

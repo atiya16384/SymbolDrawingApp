@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Switch, Text, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-paper';
-import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import SignOutButton from '../components/SignOutButton';
 
-export default function SettingsScreen({ navigation, theme, setTheme }) {
+export default function SettingsScreen({ navigation }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-  const [isDarkThemeEnabled, setIsDarkThemeEnabled] = useState(theme === DarkTheme);
-
-  // Function to toggle dark theme
-  const toggleTheme = () => {
-    const newTheme = isDarkThemeEnabled ? DefaultTheme : DarkTheme;
-    setTheme(newTheme);  // Set the theme in the parent navigator
-    setIsDarkThemeEnabled(!isDarkThemeEnabled);
-  };
 
   return (
     <View style={styles.container}>
@@ -24,14 +15,10 @@ export default function SettingsScreen({ navigation, theme, setTheme }) {
       <View style={styles.optionsContainer}>
         <View style={styles.option}>
           <Text style={styles.optionText}>Enable Notifications</Text>
-          <Switch value={isNotificationsEnabled} onValueChange={() => setIsNotificationsEnabled(!isNotificationsEnabled)} />
-        </View>
-
-        <Divider style={styles.divider} />
-
-        <View style={styles.option}>
-          <Text style={styles.optionText}>Dark Theme</Text>
-          <Switch value={isDarkThemeEnabled} onValueChange={toggleTheme} />
+          <Switch 
+            value={isNotificationsEnabled} 
+            onValueChange={() => setIsNotificationsEnabled(!isNotificationsEnabled)} 
+          />
         </View>
 
         <Divider style={styles.divider} />
