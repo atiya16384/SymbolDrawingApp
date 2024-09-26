@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, PanResponder, TouchableOpacity, Image, Modal, Button, TextInput } from 'react-native';
+import { View, StyleSheet, PanResponder, TouchableOpacity, Image, Modal, Button, TextInput, Alert } from 'react-native';
 import Svg, { Path, Text as SvgText } from 'react-native-svg';
 import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -195,9 +195,14 @@ export default function DrawSymbolScreen({ navigation }) {
           <Icon name="text-fields" size={20} color="#fff" />
           <Text style={styles.buttonText}>Text</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.toolButton} onPress={() => { setSelectedTool('eraser'); setEraserSelectorVisible(true); }}>
+        <TouchableOpacity style={styles.toolButton} onPress={() => { setEraserSelectorVisible(true); setSelectedTool('eraser'); }}>
           <Icon name="edit" size={20} color="#fff" />
           <Text style={styles.buttonText}>Eraser</Text>
+        </TouchableOpacity>
+        {/* New Search Icon */}
+        <TouchableOpacity style={styles.toolButton} onPress={handleSearch}>
+          <Icon name="search" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Search</Text>
         </TouchableOpacity>
       </View>
 
@@ -325,5 +330,18 @@ const styles = StyleSheet.create({
   cursorIcon: {
     width: 30,  // Smaller icon size for better alignment
     height: 30,
+  },
+  searchButton: {
+    marginTop: 20,
+    padding: 12,
+    backgroundColor: '#673AB7',
+    borderRadius: 10,
+    width: '90%',
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
